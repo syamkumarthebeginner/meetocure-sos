@@ -1,0 +1,7 @@
+{
+  "name": "Meetocure SOS",
+  "description": "An emergency medical assistant that finds and contacts nearby hospitals for you in critical situations using your location.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
