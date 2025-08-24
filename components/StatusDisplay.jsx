@@ -2,11 +2,9 @@
 import React from 'react';
 import { SOSState } from '../types';
 
-interface StatusDisplayProps {
-  status: SOSState;
-}
 
-const statusMessages: Record<SOSState, { message: string, icon: React.ReactNode }> = {
+
+const statusMessages = {
   [SOSState.GETTING_LOCATION]: {
     message: "Detecting your location...",
     icon: (
@@ -32,7 +30,7 @@ const statusMessages: Record<SOSState, { message: string, icon: React.ReactNode 
   [SOSState.ERROR]: { message: "", icon: null },
 };
 
-const StatusDisplay: React.FC<StatusDisplayProps> = ({ status }) => {
+const StatusDisplay= ({ status }) => {
   const { message, icon } = statusMessages[status] || { message: 'Processing...', icon: null };
   return (
     <div className="flex flex-col items-center justify-center text-center p-8 bg-black/30 backdrop-blur-md rounded-lg">

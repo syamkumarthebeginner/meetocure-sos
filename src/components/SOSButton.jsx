@@ -1,12 +1,7 @@
-
 import React from 'react';
 
-interface SOSButtonProps {
-  onClick: () => void;
-  disabled: boolean;
-}
 
-const SOSButton: React.FC<SOSButtonProps> = ({ onClick, disabled }) => {
+const SOSButton = ({ onClick, disabled }) => {
   return (
     <button
       onClick={onClick}

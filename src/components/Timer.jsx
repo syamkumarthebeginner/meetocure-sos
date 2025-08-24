@@ -1,13 +1,8 @@
-
 import React from 'react';
 
-interface TimerProps {
-  seconds: number;
-  hospitalName: string;
-  maxTime: number;
-}
 
-const Timer: React.FC<TimerProps> = ({ seconds, hospitalName, maxTime }) => {
+
+const Timer = ({ seconds, hospitalName, maxTime }) => {
   const percentage = (seconds / maxTime) * 100;
   const circumference = 2 * Math.PI * 45; // 2 * pi * radius
   const strokeDashoffset = circumference - (percentage / 100) * circumference;

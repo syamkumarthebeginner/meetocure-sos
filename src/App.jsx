@@ -1,23 +1,24 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { SOSState, type Hospital, type Coordinates } from './types';
+import { SOSState } from './types.js';
 import { findNearbyHospitals } from './services/geminiService';
 import SOSButton from './components/SOSButton';
 import StatusDisplay from './components/StatusDisplay';
 import HospitalCard from './components/HospitalCard';
-import HospitalFinder from './components/HospitalFinder'; // ✅ keep this import
+import HospitalFinder from './components/HospitalFinder';
 import Timer from './components/Timer';
+import { loadGoogleMaps } from './utils/loadGoogleMaps';
 
 const CONTACT_TIMER_SECONDS = 30;
 
-const App: React.FC = () => {
-  const [status, setStatus] = useState<SOSState>(SOSState.IDLE);
-  const [userLocation, setUserLocation] = useState<Coordinates | null>(null);
-  const [hospitals, setHospitals] = useState<Hospital[]>([]);
-  const [contactedHospitals, setContactedHospitals] = useState<Hospital[]>([]);
-  const [error, setError] = useState<string | null>(null);
-  const [currentContactIndex, setCurrentContactIndex] = useState<number>(0);
-  const [timer, setTimer] = useState<number>(CONTACT_TIMER_SECONDS);
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+const App = () => {
+  const [status, setStatus] = useState(SOSState.IDLE);
+  const [userLocation, setUserLocation] = useState(null);
+  const [hospitals, setHospitals] = useState([]);
+  const [contactedHospitals, setContactedHospitals] = useState([]);
+  const [error, setError] = useState(null);
+  const [currentContactIndex, setCurrentContactIndex] = useState(0);
+  const [timer, setTimer] = useState(CONTACT_TIMER_SECONDS);
+  const intervalRef = useRef(null);
 
   const clearTimerInterval = () => {
     if (intervalRef.current) {

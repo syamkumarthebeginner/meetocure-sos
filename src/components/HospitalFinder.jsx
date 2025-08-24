@@ -1,32 +1,27 @@
 import React, { useEffect, useState } from "react";
+import { loadGoogleMaps } from '../utils/loadGoogleMaps';
 
-declare global {
-  interface Window {
-    google: any;
-  }
-}
-
-interface Hospital {
-  name: string;
-  address: string;
-}
-
-const HospitalFinder: React.FC = () => {
-  const [hospitals, setHospitals] = useState<Hospital[]>([]);
-  const [error, setError] = useState<string | null>(null);
+const HospitalFinder = () => {
+  const [hospitals, setHospitals] = useState([]);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (window.google) {
-      navigator.geolocation.getCurrentPosition((pos) => {
-        const { latitude, longitude } = pos.coords;
-        findNearbyHospitals(latitude, longitude);
-      });
-    } else {
-      setError("Google Maps API not loaded");
-    }
+    const initializeMap = async () => {
+      try {
+        await loadGoogleMaps();
+        navigator.geolocation.getCurrentPosition((pos) => {
+          const { latitude, longitude } = pos.coords;
+          findNearbyHospitals(latitude, longitude);
+        });
+      } catch (error) {
+        setError("Failed to load Google Maps API");
+      }
+    };
+
+    initializeMap();
   }, []);
 
-  function findNearbyHospitals(lat: number, lng: number, radius: number = 2000) {
+  function findNearbyHospitals(lat, lng, radius = 2000) {
     const service = new window.google.maps.places.PlacesService(document.createElement("div"));
 
     service.nearbySearch(
@@ -35,10 +30,10 @@ const HospitalFinder: React.FC = () => {
         radius,
         type: ["hospital"],
       },
-      (results: any, status: any) => {
+      (results,status) => {
         if (status === window.google.maps.places.PlacesServiceStatus.OK && results.length > 0) {
           setHospitals(
-            results.map((r: any) => ({
+            results.map((r) => ({
               name: r.name,
               address: r.vicinity,
             }))

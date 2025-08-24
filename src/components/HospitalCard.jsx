@@ -1,12 +1,7 @@
 import React from 'react';
-import { type Hospital } from '../types';
 
-interface HospitalCardProps {
-  hospital: Hospital;
-  isCurrentlyContacting: boolean;
-}
 
-const HospitalCard: React.FC<HospitalCardProps> = ({ hospital, isCurrentlyContacting }) => {
+const HospitalCard = ({ hospital, isCurrentlyContacting }) => {
   return (
     <div className={`bg-white/10 backdrop-blur-lg rounded-xl p-6 transition-all duration-300 shadow-lg ${isCurrentlyContacting ? 'ring-4 ring-blue-500 scale-105' : 'ring-2 ring-white/20'}`}>
       <div className="flex flex-col h-full">

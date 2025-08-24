@@ -1,5 +1,4 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { type Hospital } from "../types";
 const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
 
 console.log(API_KEY);
@@ -9,7 +8,7 @@ if (!API_KEY) {
 
 const ai = new GoogleGenerativeAI(API_KEY);
 
-export async function findNearbyHospitals(latitude: number, longitude: number): Promise<Hospital[]> {
+export async function findNearbyHospitals(latitude, longitude) {
   const prompt = `Find the top 3 hospitals with their full address and a valid phone number near latitude ${latitude} and longitude ${longitude}, strictly within a 2km radius. 
 Return ONLY a JSON array of objects with fields: name, address, phone. Example:
 [
@@ -37,7 +36,7 @@ Return ONLY a JSON array of objects with fields: name, address, phone. Example:
     }
 
     try {
-      const hospitals: Hospital[] = JSON.parse(jsonString);
+      const hospitals = JSON.parse(jsonString);
       return hospitals;
     } catch (error) {
       console.error("Error parsing JSON:", error);
