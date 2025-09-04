@@ -1,18 +1,21 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { SOSState } from './types.js';
-import { findNearbyHospitals } from './services/geminiService';
+import { findNearestHospitals } from './services/googlePlacesService';
 import SOSButton from './components/SOSButton';
 import StatusDisplay from './components/StatusDisplay';
 import HospitalCard from './components/HospitalCard';
 import HospitalFinder from './components/HospitalFinder';
 import Timer from './components/Timer';
 import { loadGoogleMaps } from './utils/loadGoogleMaps';
+import { convertToWhat3Words } from './utils/what3words';
+import { convertToWhat3Words } from './utils/what3words';
 
 const CONTACT_TIMER_SECONDS = 30;
 
 const App = () => {
   const [status, setStatus] = useState(SOSState.IDLE);
   const [userLocation, setUserLocation] = useState(null);
+  const [w3wAddress, setW3wAddress] = useState(null);
   const [hospitals, setHospitals] = useState([]);
   const [contactedHospitals, setContactedHospitals] = useState([]);
   const [error, setError] = useState(null);
@@ -64,10 +67,11 @@ const App = () => {
   const fetchHospitals = useCallback(async () => {
     if (!userLocation) return;
     try {
-      const foundHospitals = await findNearbyHospitals(
-        userLocation.latitude,
-        userLocation.longitude
-      );
+      const [foundHospitals, words] = await Promise.all([
+        findNearestHospitals(userLocation.latitude, userLocation.longitude),
+        convertToWhat3Words(userLocation.latitude, userLocation.longitude),
+      ]);
+      if (words) setW3wAddress(words);
       if (foundHospitals.length === 0) {
         setError(
           'No hospitals found within a 2km radius. Please try again or contact emergency services directly.'
@@ -215,6 +219,9 @@ const App = () => {
               Your Location: Lat {userLocation.latitude.toFixed(5)}, Lon{' '}
               {userLocation.longitude.toFixed(5)}
             </p>
+            {w3wAddress && (
+              <p className="font-mono text-sm text-blue-300 mt-1">what3words: ///{w3wAddress}</p>
+            )}
           </div>
         )}
 
@@ -243,8 +250,8 @@ const App = () => {
           </section>
         )}
 
-        {/* ✅ This is where you include HospitalFinder */}
-        <HospitalFinder />
+        {/* HospitalFinder list (basic nearby list). Can be hidden if not needed. */}
+        {/* <HospitalFinder /> */}
       </main>
     </div>
   );
